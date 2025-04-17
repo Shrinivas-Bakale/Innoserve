@@ -6,161 +6,168 @@ import { firebaseApp } from '../firebase/firebase'
 import { FaRegEye } from 'react-icons/fa'
 import { FaRegEyeSlash } from 'react-icons/fa'
 import { FaGoogle } from "react-icons/fa";
-
+import { MdHomeRepairService } from "react-icons/md";
 
 const Login = () => {
-    const [email, setEmail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-
     const navigate = useNavigate()
-
     const auth = getAuth(firebaseApp)
-
-
     const googleProvider = new GoogleAuthProvider();
 
     const login = (e) => {
         e.preventDefault();
-        signInWithEmailAndPassword
-            (auth, email, password,)
+        toast.loading('Logging in...');
+        signInWithEmailAndPassword(auth, email, password)
             .then((userCredentials) => {
-                console.log(userCredentials)
-                toast.success("Logged In Successfully")
+                toast.dismiss();
+                toast.success("Logged in successfully!")
                 setTimeout(() => {
                     navigate('/')
                 }, 700)
             })
             .catch((error) => {
-                console.log(error)
+                toast.dismiss();
                 toast.error(error.message)
             })
     }
 
     const signUpWithGoogle = () => {
+        toast.loading('Connecting to Google...');
         signInWithPopup(auth, googleProvider).then((result) => {
-            console.log(result)
-            toast.success("Signed up with Google.")
+            toast.dismiss();
+            toast.success("Signed in with Google")
             setTimeout(() => {
                 navigate('/')
             }, 700)
         })
             .catch((error) => {
-                console.log(error)
+                toast.dismiss();
                 toast.error(error.message)
             })
     }
 
-
-
     return (
-        <div className='login-background  min-h-screen'>
-            <Toaster position="top-right" reverseOrder={false} />
+        <div className='min-h-screen bg-gradient-to-br from-[#2A2A2A] to-[#1A1A1A] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
+            <Toaster position="top-right" toastOptions={{
+                duration: 3000,
+                style: {
+                    background: '#333',
+                    color: '#fff',
+                }
+            }} />
 
-            <div className='login-shadow min-h-screen'>
-                <div className='flex justify-center items-center '>
-                    <div className='p-5 flex flex-col justify-center w-1/4 bg-lighterBackground text-darkText mt-32 rounded-lg'>
-                        <div className='flex justify-between items-center'>
-                            <div>
-                                <h1 className='text-3xl'>
-                                    Login
-                                </h1>
+            <div className='max-w-md w-full bg-white rounded-xl shadow-2xl overflow-hidden'>
+                {/* Header */}
+                <div className='bg-[#2A2A2A] py-6 flex justify-center'>
+                    <button onClick={() => navigate('/')} className="flex items-center gap-2">
+                        <MdHomeRepairService className="text-3xl text-[#4A90E2]" />
+                        <h1 className='text-2xl font-bold text-white'>
+                            Innoserve
+                        </h1>
+                    </button>
+                </div>
+
+                <div className='px-8 py-8'>
+                    <div className='text-center mb-8'>
+                        <h2 className='text-3xl font-extrabold text-gray-900'>
+                            Sign in to your account
+                        </h2>
+                        <p className='mt-2 text-sm text-gray-600'>
+                            Access your services and bookings
+                        </p>
+                    </div>
+
+                    <form className='space-y-6' onSubmit={login}>
+                        <div>
+                            <label htmlFor='email' className='block text-sm font-medium text-gray-700'>
+                                Email address
+                            </label>
+                            <div className='mt-1'>
+                                <input
+                                    id='email'
+                                    name='email'
+                                    type='email'
+                                    autoComplete='email'
+                                    required
+                                    className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm'
+                                    placeholder='Enter your email'
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
                             </div>
-
-                            <div>
-                                <h1 className='main-logo text-3xl mt-1'>
-                                    <button onClick={() => navigate('/')}>
-                                        Nexesential
-                                    </button>
-                                </h1>
-                            </div>
-
                         </div>
 
-                        <div className='flex flex-col justify-center'>
-                            <form action="" onSubmit={login}>
-
-                                <div className='mt-4 w-full'>
-                                    <label htmlFor='email' className='text-2xl'>
-                                        Email
-                                    </label>
-                                    <input type="email"
-                                        id='email'
-                                        name='email'
-                                        onChange={(e) => {
-                                            setEmail(e.target.value);
-                                        }}
-                                        placeholder='Email'
-                                        className='p-2 rounded-lg mt-2 w-full'
-                                        autoComplete="email"
-                                    />
-                                </div>
-
-                                <div className='mt-4 w-full'>
-                                    <label htmlFor='password' className='text-2xl'>
-                                        Password
-                                    </label>
-                                    <div className='relative'>
-                                        <button type='button' className='absolute right-0 top-4 ' onClick={() => setShowPassword(!showPassword)}>
-                                            {!showPassword ?
-                                                <FaRegEye className='w-10 h-5' />
-                                                :
-                                                <FaRegEyeSlash className='w-10 h-5' />
-                                            }
-                                        </button>
-                                        <input type={showPassword ? "text" : "password"}
-                                            name='password'
-                                            id='password'
-
-                                            onChange={(e) => {
-                                                setPassword(e.target.value);
-                                            }}
-                                            placeholder='Password'
-                                            className='p-2 rounded-lg mt-2 w-full'
-                                            autoComplete='current-password'
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className='mt-4 w-full'>
-                                    <button className='p-2 rounded-lg mt-2 w-full hover:bg-NavLinkHover hover:text-black text-NavLinkText bg-NavLinkBackground' type='submit' >Login</button>
-                                </div>
-                            </form>
-
-                        </div>
-
-                        <div className="mt-4 w-full px-4 flex items-center justify-between">
-                            <hr className="flex-grow border-t border-gray-400" />
-
-                            <p className="px-4 text-gray-500">or</p>
-
-                            <hr className="flex-grow border-t border-gray-400" />
-                        </div>
-
-                        <div className='flex justify-center'>
-                            <div className='mt-4 w-full '>
+                        <div>
+                            <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                                Password
+                            </label>
+                            <div className='mt-1 relative'>
+                                <input
+                                    id='password'
+                                    name='password'
+                                    type={showPassword ? 'text' : 'password'}
+                                    autoComplete='current-password'
+                                    required
+                                    className='appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#4A90E2] focus:border-[#4A90E2] sm:text-sm pr-10'
+                                    placeholder='Enter your password'
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
                                 <button
-                                    onClick={signUpWithGoogle}
-                                    className='w-full p-2 rounded-lg flex items-center justify-center hover:bg-NavLinkHover hover:text-black text-NavLinkText bg-NavLinkBackground'>
-                                    <FaGoogle className='mr-3' />
-                                    Sign in with Google
+                                    type='button'
+                                    className='absolute inset-y-0 right-0 pr-3 flex items-center'
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ?
+                                        <FaRegEyeSlash className='h-5 w-5 text-gray-400' /> :
+                                        <FaRegEye className='h-5 w-5 text-gray-400' />
+                                    }
                                 </button>
                             </div>
                         </div>
 
-                        <div className='flex justify-center mt-4 gap-2'>
-
-                            <h3 className='text-base'>
-                                Don't have an account?
-                            </h3>
-
-                            <button className='underline' onClick={() => navigate("/signup")}>
-                                Sign up
+                        <div>
+                            <button
+                                type='submit'
+                                className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4A90E2] hover:bg-[#3A7BC8] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4A90E2]'
+                            >
+                                Sign in
                             </button>
+                        </div>
+                    </form>
 
+                    <div className='mt-6'>
+                        <div className='relative'>
+                            <div className='absolute inset-0 flex items-center'>
+                                <div className='w-full border-t border-gray-300'></div>
+                            </div>
+                            <div className='relative flex justify-center text-sm'>
+                                <span className='px-2 bg-white text-gray-500'>Or continue with</span>
+                            </div>
                         </div>
 
+                        <div className='mt-6'>
+                            <button
+                                onClick={signUpWithGoogle}
+                                className='w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50'
+                            >
+                                <FaGoogle className='h-5 w-5 text-[#4285F4] mr-2' />
+                                Sign in with Google
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className='mt-6 flex items-center justify-center'>
+                        <div className='text-sm'>
+                            <span className='text-gray-500'>Don&apos;t have an account?</span>{' '}
+                            <button
+                                onClick={() => navigate('/signup')}
+                                className='font-medium text-[#4A90E2] hover:text-[#3A7BC8]'
+                            >
+                                Sign up
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

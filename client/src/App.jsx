@@ -24,6 +24,7 @@ import HairStudio from './pages/ServicePage/HairStudio'
 import ACRepair from './pages/ServicePage/ACRepair'
 import AboutUs from './pages/AboutUs';
 import OrdersPage from './pages/OrdersPage'
+import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './pages/ProtectedRoute';
 
 
@@ -40,6 +41,7 @@ function App() {
         <Route path="/" element={<Layout />} >
           <Route exact path="/" element={<Landing />} />
           <Route exact path="/service" element={<ServicePage />} />
+          <Route exact path="/profile" element={<ProtectedRoute element={ProfilePage} />} />
           <Route path="/aboutus" element={<AboutUs />} />
           <Route exact path="/category" element={<CategoryPage />} />
           <Route exact path="/category1" element={<Category />} />

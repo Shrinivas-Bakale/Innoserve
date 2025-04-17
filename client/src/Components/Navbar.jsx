@@ -23,7 +23,6 @@ const Navbar = () => {
             if (user) {
                 setLoginButtonVisibility(false)
                 setUser(user)
-                console.log(user)
             }
             else {
                 setLoginButtonVisibility(true)
@@ -33,7 +32,6 @@ const Navbar = () => {
     }, [])
 
     const FirebaseContext = useFirebase()
-    console.log(FirebaseContext.user)
 
     const userDropdownRef = useRef()
 
@@ -51,109 +49,108 @@ const Navbar = () => {
     };
 
     return (
-        <>
-            <div className=' bg-lightBackground sticky top-0 z-30'>
-                <div className='container mx-auto '>
-                    <div className='grid grid-cols-1'>
-                        <nav className='  border-[#36302a]'>
-                            <div className='flex justify-between items-center text-[#f6f3ec] p-1 px-10 text-xl'>
-                                <div className='logo flex gap-9 items-center'>
-                                    {/* <img src={logo} alt="" className='w-20' /> */}
-                                    <button onClick={() => navigate("/")} className="flex items-center gap-3">
-                                        <MdHomeRepairService className="text-[38px]" />
-                                        <h1 className='main-logo text-[38px] mt-3'>
-                                            Innoserve
-                                        </h1>
+        <div className='bg-[#2A2A2A] sticky top-0 z-30 shadow-lg'>
+            <div className='container mx-auto px-4'>
+                <nav className='py-3'>
+                    <div className='flex justify-between items-center text-white'>
+                        {/* Logo section */}
+                        <div className='flex items-center'>
+                            <button onClick={() => navigate("/")} className="flex items-center gap-2 transition-transform hover:scale-105">
+                                <MdHomeRepairService className="text-3xl md:text-4xl text-[#4A90E2]" />
+                                <h1 className='text-2xl md:text-3xl font-bold tracking-wide'>
+                                    Innoserve
+                                </h1>
+                            </button>
+                        </div>
+
+                        {/* Right side navigation */}
+                        <div className='flex items-center gap-5'>
+                            {loginButtonVisibility ? (
+                                <NavLink
+                                    className="px-4 py-2 text-white hover:text-[#4A90E2] transition-colors font-medium"
+                                    to="/login"
+                                >
+                                    Login
+                                </NavLink>
+                            ) : null}
+
+                            <NavLink
+                                to="/cart"
+                                className="relative p-2 hover:bg-gray-700 hover:text-[#4A90E2] rounded-full transition-colors"
+                            >
+                                <IoCartOutline className='text-2xl' />
+                            </NavLink>
+
+                            {!loginButtonVisibility && (
+                                <div className='relative'>
+                                    <button
+                                        onClick={() => setProfileDropdown(!profileDropdown)}
+                                        className='flex items-center gap-2 px-3 py-2 hover:bg-gray-700 rounded-full transition-colors'
+                                    >
+                                        <FaUser className='text-xl' />
+                                        <svg
+                                            className={`fill-current h-4 w-4 transform transition duration-150 ease-in-out ${profileDropdown ? "rotate-180" : "rotate-0"}`}
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                        >
+                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                        </svg>
                                     </button>
-                                    <div className='flex gap-5 items-center '>
 
-                                    </div>
-                                </div>
+                                    {profileDropdown && (
+                                        <div
+                                            className='absolute right-0 w-48 mt-2 bg-white rounded-lg shadow-xl z-50'
+                                            ref={userDropdownRef}
+                                        >
+                                            <div className='p-3 border-b border-gray-200'>
+                                                <p className='text-sm text-gray-500'>Signed in as</p>
+                                                <p className='font-medium text-gray-800 truncate'>
+                                                    {user.displayName || user.email}
+                                                </p>
+                                            </div>
 
-
-                                <div>
-                                </div>
-
-                                <div className='flex gap-6 items-center relative'>
-
-                                    {/* <BsWhatsapp className='text-xl' />
-                                    <BsInstagram className='text-xl' /> */}
-
-                                    {/* <NavLink className="underline-link">
-                                        <h3>Beauty</h3>
-                                    </NavLink>
-                                    <NavLink className="underline-link">
-                                        <h3>Homes</h3>
-                                    </NavLink> */}
-                                    {
-                                        loginButtonVisibility ?
-                                            <NavLink className="underline-link" to={"/login"}> Login</NavLink>
-                                            : null
-                                    }
-                                    <NavLink to={"/cart"}>
-                                        <IoCartOutline className='text-3xl' />
-                                    </NavLink>
-                                    {loginButtonVisibility ?
-                                        null :
-                                        <>
-                                            <div className=''>
-                                                <button onClick={() => setProfileDropdown(!profileDropdown)} className='flex items-center gap-2'>
-                                                    <FaUser className='text-2xl' />
-
-                                                    <span>
-                                                        <svg
-                                                            className={`fill-current h-4 w-4 transform transition duration-150 ease-in-out ${profileDropdown ? "rotate-180" : "rotate-0"}`}
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            viewBox="0 0 20 20"
-                                                        >
-                                                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                                        </svg>
-                                                    </span>
+                                            <div className='py-1'>
+                                                <button
+                                                    className='w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100'
+                                                    onClick={() => { navigate("/profile"); setProfileDropdown(false); }}
+                                                >
+                                                    Your Profile
                                                 </button>
-
-
-
                                             </div>
-                                        </>
-                                    }
 
-                                    <NavLink className=' p-4 text-xl bg-transparent text-NavLinkText rounded-lg hover:bg-NavLinkHover border-2 border-[#fafafa] hover:text-NavLinkBackground' to={'/aboutus'}>Get in touch</NavLink>
-
-
-                                    {profileDropdown &&
-                                        (
-                                            <div className='w-full absolute transform transition duration-150 ease-in-out top-full bottom-0 text-black  mt-1 md:mt-2 ' ref={userDropdownRef}>
-                                                <div className='flex flex-col p-2 border-2 border-black bg-white'>
-                                                    <div className='border-b-[1px] py-1 border-black w-full'>
-                                                        <p className='text-lg ' >
-                                                            {user.displayName || user.email}
-                                                        </p>
-                                                    </div>
-                                                    <div className='py-1'>
-                                                        <button className='text-lg' onClick={() => { navigate("/orders") }}>
-                                                            Your Orders
-                                                        </button>
-                                                    </div>
-                                                    <div className='py-1'>
-                                                        <button className='text-lg' onClick={() => { signOut(auth); location.reload() }}>
-                                                            Logout
-                                                        </button>
-                                                    </div>
-                                                </div>
+                                            <div className='py-1'>
+                                                <button
+                                                    className='w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100'
+                                                    onClick={() => { navigate("/orders"); setProfileDropdown(false); }}
+                                                >
+                                                    Your Orders
+                                                </button>
                                             </div>
-                                        )}
 
+                                            <div className='py-1 border-t border-gray-200'>
+                                                <button
+                                                    className='w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100'
+                                                    onClick={() => { signOut(auth); location.reload() }}
+                                                >
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+                            )}
 
-                            </div>
-                        </nav>
+                            <NavLink
+                                className='px-4 py-2 text-white bg-[#4A90E2] hover:bg-[#3A7BC8] text-gray-900 font-medium rounded-lg transition-colors'
+                                to='/aboutus'
+                            >
+                                Get in touch
+                            </NavLink>
+                        </div>
                     </div>
-
-                </div>
+                </nav>
             </div>
-
-
-        </>
+        </div>
     )
 }
 

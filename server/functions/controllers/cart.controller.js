@@ -1,17 +1,20 @@
 const { db } = require("../firebase.js");
-const {  doc, getDoc, updateDoc } = require("firebase/firestore");
+const { doc, getDoc, updateDoc } = require("firebase/firestore");
 
 exports.addToCart = async (req, res) => {
   try {
     const { userid } = req.params;
     const { serviceId, quantity } = req.body; // { serviceId: "abc123", quantity: 1 }
 
-    console.log(userid);
+    console.log("Adding item to cart for user:", userid);
+
     if (!userid || typeof userid !== "string") {
+      console.error("Invalid userid:", userid);
       return res.status(400).send({ error: "Invalid userid" });
     }
 
     if (!serviceId || quantity <= 0) {
+      console.error("Invalid serviceId or quantity:", { serviceId, quantity });
       return res.status(400).send({ error: "Invalid serviceId or quantity" });
     }
 
@@ -21,8 +24,11 @@ exports.addToCart = async (req, res) => {
 
     if (!cartDoc.exists) {
       // If no cart exists, create one
+      console.log("Creating new cart for user:", userid);
       await cartRef.set({
         cartItems: [{ serviceId, quantity }],
+        userId: userid, // Add userId to make queries easier
+        lastUpdated: new Date().toISOString(),
       });
     } else {
       const cartData = cartDoc.data();
@@ -38,13 +44,18 @@ exports.addToCart = async (req, res) => {
         cartData.cartItems.push({ serviceId, quantity });
       }
 
-      await cartRef.update({ cartItems: cartData.cartItems });
+      await cartRef.update({
+        cartItems: cartData.cartItems,
+        lastUpdated: new Date().toISOString(),
+      });
     }
 
     res.status(200).send({ message: "Item added to cart successfully!" });
   } catch (error) {
     console.error("Error adding to cart:", error);
-    res.status(500).send({ error: "Failed to add item to cart" });
+    res
+      .status(500)
+      .send({ error: "Failed to add item to cart", details: error.message });
   }
 };
 
@@ -54,17 +65,29 @@ exports.getCartItems = async (req, res) => {
 
     // Validate userid
     if (!userid || typeof userid !== "string") {
+      console.error("Invalid or missing userid:", userid);
       return res.status(400).send({ error: "Invalid or missing userid" });
     }
 
+    console.log("Fetching cart items for user:", userid);
     const cartRef = db.collection("carts").doc(userid);
     const cartDoc = await cartRef.get();
 
     if (!cartDoc.exists) {
-      return res.status(404).send({ error: "Cart not found" });
+      console.log("Cart not found for user:", userid);
+      return res.status(200).send([]); // Return empty array instead of 404
     }
 
     const cartData = cartDoc.data();
+
+    if (
+      !cartData.cartItems ||
+      !Array.isArray(cartData.cartItems) ||
+      cartData.cartItems.length === 0
+    ) {
+      console.log("Cart is empty for user:", userid);
+      return res.status(200).send([]);
+    }
 
     // Filter and validate cartItems
     const servicePromises = cartData.cartItems
@@ -92,7 +115,9 @@ exports.getCartItems = async (req, res) => {
     res.status(200).send(cartWithDetails);
   } catch (error) {
     console.error("Error fetching cart:", error);
-    res.status(500).send({ error: "Failed to fetch cart" });
+    res
+      .status(500)
+      .send({ error: "Failed to fetch cart", details: error.message });
   }
 };
 

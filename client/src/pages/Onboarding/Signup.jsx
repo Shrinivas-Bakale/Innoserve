@@ -134,7 +134,7 @@ const Signup = () => {
                   <h1 className='main-logo text-3xl mt-1'>
                     <button onClick={() => navigate('/')}>
 
-                    Nexesential
+                      Innoserve
                     </button>
                   </h1>
                 </div>

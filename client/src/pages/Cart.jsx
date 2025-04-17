@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import fossil from "../assets/Fossil Men's Neutra Chronograph Brown Leather Strap Watch 44mm - Macy's.jpg";
 import { Link, NavLink } from "react-router-dom";
 import PaymentSummary from "./PaymentSummary";
@@ -16,13 +16,14 @@ const Cart = () => {
         return savedCartItems ? JSON.parse(savedCartItems) : [];
     });
     const auth = getAuth(firebaseApp);
-    const uId = auth.currentUser?.uid;
+    const [uId, setUId] = useState(auth.currentUser?.uid);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [userState, setUserState] = useState()
-
+    const [userState, setUserState] = useState(false);
 
     const getCartItems = async () => {
         try {
+            if (!uId) return; // Don't fetch if no user ID
+
             const response = await axios.get(
                 `http://localhost:5001/fsdproject-2f44c/us-central1/napi/api/cart/getCartItems/${uId}`
             );
@@ -32,6 +33,7 @@ const Cart = () => {
             localStorage.setItem("cartItems", JSON.stringify(fetchedItems)); // Save to local storage
         } catch (error) {
             console.error("Error fetching cart items:", error);
+            toast.error("Failed to load cart items. Please refresh the page.");
         }
     };
 
@@ -40,44 +42,53 @@ const Cart = () => {
         setTotalPrice(total);
     };
 
+    // Update cart when user logs in or out
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUserState(true);
+                setUId(user.uid);
+            } else {
+                setUserState(false);
+                setUId(null);
+                setCartItems([]); // Clear cart items when logged out
+                localStorage.removeItem("cartItems"); // Clear local storage
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    // Fetch cart items when user ID changes
     useEffect(() => {
         if (uId) {
             getCartItems();
         }
-    }, []);
+    }, [uId, userState]);
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserState(true)
-
-            } else {
-                setUserState(false)
+    const handleDelete = async (id) => {
+        try {
+            if (!uId) {
+                toast.error("You need to be logged in to remove items");
+                return;
             }
-        })
-    }, [])
 
-    // Save cart items to local storage whenever they change
-    useEffect(() => {
-        localStorage.setItem("cartItems", JSON.stringify(cartItems));
-    }, [cartItems]);
+            // Remove from backend first
+            await axios.delete(
+                `http://localhost:5001/fsdproject-2f44c/us-central1/napi/api/cart/removeFromCart/${uId}/${id}`
+            );
 
-    const handleDelete = (id) => {
-        const updatedCartItems = cartItems.filter((item) => item.id !== id);
-        setCartItems(updatedCartItems); // Update state
-        calculateTotal(updatedCartItems); // Recalculate total
-        localStorage.setItem("cartItems", JSON.stringify(updatedCartItems)); // Update local storage
+            // Then update local state
+            const updatedCartItems = cartItems.filter((item) => item.id !== id);
+            setCartItems(updatedCartItems);
+            calculateTotal(updatedCartItems);
+            localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
 
-        // Optionally, update the backend
-        axios
-            .delete(`http://localhost:5001/fsdproject-2f44c/us-central1/napi/api/cart/removeFromCart/${uId}/${id}`)
-            .then(() => {
-                toast.success("Item removed from cart successfully!");
-            })
-            .catch((error) => {
-                console.error("Error deleting item:", error);
-                toast.error("Failed to remove item. Please try again.");
-            });
+            toast.success("Item removed from cart successfully!");
+        } catch (error) {
+            console.error("Error deleting item:", error);
+            toast.error("Failed to remove item. Please try again.");
+        }
     };
 
     return (
@@ -96,12 +107,12 @@ const Cart = () => {
                                         {cartItems.length > 0 ? (
                                             cartItems.map((item) => (
                                                 <div key={item.id} className="flex items-center gap-5 rounded-lg shadow-md bg-slate-200 m-2 p-6 relative">
-                                                    {/* <button
-                                            className="absolute top-2 right-2 rounded-full text-black w-6 h-6 flex items-center justify-center text-4xl"
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            &times;
-                                        </button> */}
+                                                    <button
+                                                        className="absolute top-2 right-2 rounded-full bg-gray-300 hover:bg-gray-400 text-black w-8 h-8 flex items-center justify-center"
+                                                        onClick={() => handleDelete(item.id)}
+                                                    >
+                                                        <MdDelete />
+                                                    </button>
                                                     <div>
                                                         <img
                                                             src={item.pictureUrl || fossil}
@@ -119,7 +130,6 @@ const Cart = () => {
                                                                 to="/checkout"
                                                                 state={{ totalPrice }}
                                                                 className="bg-black text-white px-10 py-3 whitespace-nowrap rounded-md w-full text-center"
-
                                                             >
                                                                 Proceed to Checkout
                                                             </NavLink>
@@ -149,7 +159,6 @@ const Cart = () => {
                     </div>
                 </div>
             )}
-
         </>
     );
 };

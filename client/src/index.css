@@ -1,35 +1,44 @@
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --primary-color: #4a91e298;
+  --primary-hover: #3a7ac850;
+  --dark-bg: #2a2a2a;
+  --light-bg: #f5f5f5;
+  --text-dark: #333333;
+  --text-light: #ffffff;
+}
 
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  font-family: "Syne", sans-serif;
+  font-family: "Inter", "Helvetica", "Arial", sans-serif;
 }
 
 /* Style the scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: black; /* Background color of the scrollbar track */
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: white; /* Color of the scrollbar thumb */
-  border-radius: 10px; /* Rounded corners for the thumb */
+  background: #888;
+  border-radius: 4px;
 }
 
 /* Optional: Change the thumb color on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Darker color on hover */
+  background: #555;
 }
 
 .main-logo {
@@ -39,6 +48,14 @@ body {
 }
 
 .home-main-background {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.7)
+    ),
+    url("./assets/Home-Main-Banner.jpg");
+  background-size: cover;
+  background-position: center;
   position: relative;
   width: 100%;
   height: 100vh; /* Full screen height */
@@ -52,7 +69,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url("./assets/Home-Main-Banner.jpg") no-repeat center center;
+  /* background: url("./assets/Home-Main-Banner.jpg") no-repeat center center; */
   background-size: contain; /* Ensures the whole image is visible */
   /* z-index: -1; */
   transform: scale(1.6) translateX(8%); /* Scale the image */
@@ -115,10 +132,10 @@ body {
 }
 
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
   }
-  100% {
+  to {
     opacity: 1;
   }
 }
@@ -134,10 +151,12 @@ body {
 
 .feedback-exit {
   opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .feedback-enter {
   opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .footer-gradient {
@@ -169,4 +188,61 @@ body {
   margin: 8px;
   border-color: black;
   border-radius: 8px;
+}
+
+/* Service cards */
+.service-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Button styles */
+.btn-primary {
+  @apply bg-[#4A90E2] text-white hover:bg-[#3A7BC8] transition-all px-6 py-3 rounded-lg font-medium;
+}
+
+.btn-secondary {
+  @apply bg-transparent border-2 border-gray-700 text-gray-900 hover:border-[#4A90E2] hover:text-[#4A90E2] transition-all px-6 py-3 rounded-lg font-medium;
+}
+
+/* Content section styles */
+.section-title {
+  @apply text-3xl md:text-4xl font-bold mb-6 relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary-color);
+}
+
+/* Custom animations */
+.animate-fadeIn {
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Fix for responsive containers */
+.container {
+  @apply px-4;
+}
+
+@media (max-width: 640px) {
+  .home-main-background {
+    background-position: 75% center;
+  }
+}
+
+/* Improved navbar dropdown */
+.nav-dropdown {
+  @apply absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20;
+  animation: fadeIn 0.2s ease-in-out;
 }

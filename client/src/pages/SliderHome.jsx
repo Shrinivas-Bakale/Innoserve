@@ -4,11 +4,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import diwaliLights from "../assets/diwali-lights.webp";
-import wallPanels from "../assets/wall-panels.webp";
-import waterPurifier from "../assets/water-purify.webp";
-import smartLock from "../assets/smart-lock.webp";
 import homePainting from "../assets/home-painting.webp";
-import spaAyurveda from "../assets/spa.jpg";
+import ac from "../assets/AC.webp";
+import cleaning from "../assets/Cleaning.webp";
+import electrician from "../assets/Electrician.webp";
+import spaAyurveda from "../assets/ayurveda-spa.webp";
 import hairStudio from "../assets/hair-studio-women.jpg";
 import acRepair from "../assets/ac-repair-service.webp";
 import { useNavigate } from 'react-router-dom';
@@ -24,21 +24,20 @@ const SliderHome = () => {
             path: "/diwalilights"
         },
         {
-            img: wallPanels,
-            title: "Wall Panels",
-            path: "/wallpanels"
+            img: homePainting,
+            title: "Home Painting",
+            path: "/homepainting"
         },
         {
-            img: waterPurifier,
+            img: ac,
             title: "Water Purifier",
             path: "/waterpurifier"
         },
         {
-            img: smartLock,
+            img: cleaning,
             title: "Smart Lock",
             path: "/smartlock"
         },
-
         {
             img: spaAyurveda,
             title: "Ayurveda Spa",
@@ -55,9 +54,9 @@ const SliderHome = () => {
             path: "/acrepair"
         },
         {
-            img: homePainting,
-            title: "Home Painting",
-            path: "/homepainting"
+            img: electrician,
+            title: "Electrician",
+            path: "/electrician"
         }
     ]
 
@@ -123,7 +122,7 @@ const SliderHome = () => {
                         {sliderContent.map((item, index) => (
                             <div className="flex flex-col justify-center items-start p-3" key={index} >
                                 <button
-                                onClick={() => navigate(item.path)}
+                                    onClick={() => navigate(item.path)}
                                 >
                                     <img src={item.img} alt="" className='rounded-2xl h-[300px] w-[260px] transform transition-transform duration-300 hover:scale-105' />
                                     <h5 className='font-semibold text-lg text-lightText mt-3'>{item.title}</h5>

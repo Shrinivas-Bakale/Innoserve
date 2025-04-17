@@ -107,11 +107,12 @@ const Checkout = () => {
 
             // Step 2: Configure Razorpay options
             const options = {
-                key: "rzp_test_1txnm5ZM9iktJs",
-                amount: order.amount, // Amount in paise
-                currency: order.currency,
-                name: "Nexesential",
-                description: "Ordering a service",
+                key: "rzp_test_cM6ijYzIVo12HZ",
+                amount: Number(amount * 100), // Amount in paise
+                currency: "INR",
+                name: "Innoserve",
+                description: "Service Booking",
+                image: "",
                 order_id: order.id, // Order ID from backend
                 handler: async function (response2) {
                     // Step 3: Handle successful payment
