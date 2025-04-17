@@ -3,7 +3,7 @@ const serviceAccount = require("./permissions.json"); // No need for `assert { t
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://fsdproject-2f44c-default-rtdb.firebaseio.com",
+  databaseURL: "https://capstone-ea1a9-default-rtdb.firebaseio.com/",
 });
 
 const db = admin.firestore();

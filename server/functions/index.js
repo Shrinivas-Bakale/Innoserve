@@ -17,8 +17,8 @@ app.use(
       "http://localhost:5173",
       "http://127.0.0.1:5173",
       "http://127.0.0.1:5001",
-      "https://fsdproject-2f44c.web.app",
-      "https://fsdproject-2f44c.firebaseapp.com",
+      "https://capstone-ea1a9.web.app/",
+      "https://capstone-ea1a9.firebaseapp.com/"
     ],
   })
 );
