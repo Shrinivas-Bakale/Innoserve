@@ -1,0 +1,172 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Syne", sans-serif;
+}
+
+/* Style the scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: black; /* Background color of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: white; /* Color of the scrollbar thumb */
+  border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+/* Optional: Change the thumb color on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Darker color on hover */
+}
+
+.main-logo {
+  font-family: "Bebas Neue", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.home-main-background {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full screen height */
+  overflow: hidden;
+}
+
+.home-main-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("./assets/Home-Main-Banner.jpg") no-repeat center center;
+  background-size: contain; /* Ensures the whole image is visible */
+  /* z-index: -1; */
+  transform: scale(1.6) translateX(8%); /* Scale the image */
+}
+
+.underline-link {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.underline-link::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background-color: #fafafa;
+  bottom: 0;
+  left: 0;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+
+.underline-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+.aos {
+  animation: appear linear;
+  animation-timeline: view();
+  animation-range: entry 0;
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(100%); /* Start from the left outside */
+    opacity: 0; /* Start invisible */
+  }
+  100% {
+    transform: translateY(0); /* End at its original position */
+    opacity: 1; /* Fully visible */
+  }
+}
+
+.aos-home {
+  animation: slideIn 0.4s ease-in-out; /* Adjust duration and easing */
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.aos-fade {
+  animation: fadeIn 1.7s ease-out;
+}
+
+.feedback {
+  transition: opacity 0.5s ease;
+  opacity: 1;
+}
+
+.feedback-exit {
+  opacity: 0;
+}
+
+.feedback-enter {
+  opacity: 1;
+}
+
+.footer-gradient {
+  background: rgb(246, 243, 236);
+  background: linear-gradient(
+    90deg,
+    b rgba(246, 243, 236, 1) 0%,
+    rgba(54, 48, 42, 1) 0%,
+    rgba(139, 123, 107, 1) 100%
+  );
+}
+
+.login-background {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: url("./assets/login-bg1.jpg");
+  background-size: cover;
+}
+
+.product-page-shadow {
+  box-shadow: -10px -10px 30px #ffffff, 10px 10px 30px rgba(174, 174, 192, 0.4);
+}
+
+.typical-btn {
+  padding: 8px;
+  border-width: 2px;
+  margin: 8px;
+  border-color: black;
+  border-radius: 8px;
+}
