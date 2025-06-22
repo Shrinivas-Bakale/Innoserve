@@ -107,7 +107,7 @@ const Checkout = () => {
 
             // Step 2: Configure Razorpay options
             const options = {
-                key: "rzp_test_cM6ijYzIVo12HZ",
+                key: "rzp_test_QEGpzQWYSPlxbf",
                 amount: Number(amount * 100), // Amount in paise
                 currency: "INR",
                 name: "Innoserve",
@@ -155,6 +155,13 @@ const Checkout = () => {
             toast.error("Error initiating Razorpay payment:", error);
             toast.error(`Error initiating Razorpay payment: ${error.message}`);
         }
+    };
+
+    const saveAddress = () => {
+        // Save the edited address to localStorage
+        localStorage.setItem('editedAddress', JSON.stringify(editedAddress));
+        setIsEditing(false);
+        setAddressModal(false);
     };
 
     return (
@@ -278,12 +285,13 @@ const Checkout = () => {
                                 {isEditing ? (
                                     <textarea
                                         className="w-full p-2 border border-gray-300 rounded-md"
-                                        value={userDocument?.address}
+                                        value={editedAddress} // Changed from userDocument?.address
                                         onChange={(e) => setEditedAddress(e.target.value)}
                                         rows="3"
+                                        placeholder="Enter your address"
                                     />
                                 ) : (
-                                    <p className="mt-2">{address}</p>
+                                    <p className="mt-2">{editedAddress}</p> // Changed from address
                                 )}
                             </div>
 
@@ -291,13 +299,17 @@ const Checkout = () => {
                                 {isEditing ? (
                                     <>
                                         <button
-                                            // onClick={saveAddress}
+                                            onClick={saveAddress} // Added the onClick handler
                                             className="bg-black hover:bg-gray-900 text-white font-bold py-2 px-4 rounded"
                                         >
                                             Save
                                         </button>
                                         <button
-                                            onClick={() => setIsEditing(false)}
+                                            onClick={() => {
+                                                setIsEditing(false);
+                                                // Reset to original address if user cancels
+                                                setEditedAddress(userDocument?.address || editedAddress);
+                                            }}
                                             className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
                                         >
                                             Cancel
@@ -313,7 +325,10 @@ const Checkout = () => {
                                 )}
 
                                 <button
-                                    onClick={() => setAddressModal(false)}
+                                    onClick={() => {
+                                        setAddressModal(false);
+                                        setIsEditing(false);
+                                    }}
                                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
                                 >
                                     Close

@@ -125,13 +125,16 @@ exports.removeFromCart = async (req, res) => {
   const { userid, serviceid } = req.params;
   console.log(userid, serviceid);
   try {
-    const cartRef = doc(db, "carts", userid);
+    // Use v8 SDK style like the other functions
+    const cartRef = db.collection("carts").doc(userid);
     console.log(cartRef);
 
     // Fetch the current cart document
-    const cartDoc = await getDoc(cartRef);
+    const cartDoc = await cartRef.get();
     console.log(cartDoc);
-    if (!cartDoc.exists()) {
+
+    if (!cartDoc.exists) {
+      // Note: no parentheses for v8 SDK
       return res.status(404).send({ error: "Cart not found" });
     }
 
@@ -142,7 +145,10 @@ exports.removeFromCart = async (req, res) => {
     );
 
     // Update the cartItems field in Firestore
-    await updateDoc(cartRef, { cartItems: updatedCartItems });
+    await cartRef.update({
+      cartItems: updatedCartItems,
+      lastUpdated: new Date().toISOString(),
+    });
 
     res.status(200).send({ message: "Item removed from cart successfully!" });
   } catch (error) {
